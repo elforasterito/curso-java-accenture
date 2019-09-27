@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,11 +20,20 @@ public class SalvoController {
     private GameRepository gameRepository;
 
     @RequestMapping("/games")
-    public List<Object> getAllgames() {
+    public List<Object> getAllGames() {
         return gameRepository
                 .findAll()
                 .stream()
                 .map(game -> game.toDTO())
                 .collect(Collectors.toList());
+    }
+
+    @Autowired
+    private GamePlayerRepository gamePlayerRepository;
+
+    @RequestMapping("/game_view/{id}")
+    public Map<String, Object> findGamePlayers(@PathVariable long id){
+        GamePlayer gamePlayer = gamePlayerRepository.findById(id).get();
+        return gamePlayer.makeShipDTO();
     }
 }
