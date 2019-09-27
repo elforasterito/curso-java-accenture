@@ -4,8 +4,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Ship {
@@ -15,9 +17,9 @@ public class Ship {
     private long id;
 
     private String type;
-    @Column(name = "ship_location")
+    @Column(name = "shipLocation")
     @ElementCollection
-    Set<String> location;
+    Set<String> shipLocation;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
@@ -25,9 +27,9 @@ public class Ship {
 
     public Ship(){    }
 
-    public Ship(GamePlayer gamePlayer, String type, Set<String> location){
+    public Ship(GamePlayer gamePlayer, String type, Set<String> shipLocation){
         this.type = type;
-        this.location = location;
+        this.shipLocation = shipLocation;
         this.gamePlayer = gamePlayer;
     }
 
@@ -39,18 +41,18 @@ public class Ship {
         return type;
     }
 
-    public Set<String> getLocation() {
-        return location;
+    public Set<String> getShipLocation() {
+        return shipLocation;
     }
 
     public GamePlayer getGamePlayer() {
         return gamePlayer;
     }
 
-    public Map<String, Object> makeShipDTO() {
+    public Map<String, Object> ShipDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("type", this.getType());
-        dto.put("locations", this.getLocation());
+        dto.put("shipLocations", this.getShipLocation());
         return dto;
     }
 }

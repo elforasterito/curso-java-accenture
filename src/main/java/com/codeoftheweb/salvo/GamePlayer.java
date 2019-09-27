@@ -26,6 +26,9 @@ public class GamePlayer {
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     private Set<Ship> ships;
 
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    private Set<Salvo> salvos;
+
     public GamePlayer() {     }
 
     public GamePlayer(Date creationDate, Game game, Player player) {
@@ -54,6 +57,10 @@ public class GamePlayer {
         return creationDate;
     }
 
+    public Set<Salvo> getSalvos() {
+        return salvos;
+    }
+
     public Map<String, Object> makeGamePlayersDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", this.getId());
@@ -68,13 +75,24 @@ public class GamePlayer {
         dto.put("created", this.getGame().getCreationDate().toInstant().toEpochMilli());
         dto.put("gamePlayers", this.getGame().getAllGamePlayersDTO(getGame().getGamePlayers()));
         dto.put("ships", this.getAllShips(getShips()));
+        dto.put("salvoes", this.getAllSalvos(
+                this.getGame().getGamePlayers().stream()
+                .flatMap(gamePlayer -> gamePlayer.getSalvos().stream())
+                .collect(Collectors.toSet())
+        ));
         return dto;
     }
 
     public List<Map<String, Object>> getAllShips(Set<Ship> ships) {
         return ships
                 .stream()
-                .map(ship -> ship.makeShipDTO())
+                .map(ship -> ship.ShipDTO())
+                .collect(Collectors.toList());
+    }
+    public List<Map<String, Object>> getAllSalvos(Set<Salvo> salvos) {
+        return salvos
+                .stream()
+                .map(salvo -> salvo.makeSalvoDTO())
                 .collect(Collectors.toList());
     }
 }
