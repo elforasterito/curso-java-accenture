@@ -1,13 +1,12 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.models;
 
+import com.codeoftheweb.salvo.models.GamePlayer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class Ship {
@@ -52,7 +51,8 @@ public class Ship {
     public Map<String, Object> ShipDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("type", this.getType());
-        dto.put("shipLocations", this.getShipLocation());
+        dto.put("locations", this.getShipLocation());
         return dto;
     }
+
 }

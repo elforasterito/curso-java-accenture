@@ -1,4 +1,4 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.models;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -65,26 +65,25 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().makePlayerDTO());
-        dto.put("ships", this.getAllShips(getShips()));
         return dto;
     }
 
-     public Map<String, Object> makeShipDTO() {
+    public Map<String, Object> makePlayerShipsDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", this.getGame().getId());
         dto.put("created", this.getGame().getCreationDate().toInstant().toEpochMilli());
-        dto.put("gamePlayers", this.getGame().getAllGamePlayersDTO(getGame().getGamePlayers()));
-        dto.put("ships", this.getAllShips(getShips()));
+        dto.put("gamePlayers", this.getGame().getAllGamePlayers());
+        dto.put("ships", this.getAllShips());
         dto.put("salvoes", this.getAllSalvos(
                 this.getGame().getGamePlayers().stream()
-                .flatMap(gamePlayer -> gamePlayer.getSalvos().stream())
-                .collect(Collectors.toSet())
+                        .flatMap(gamePlayer -> gamePlayer.getSalvos().stream())
+                        .collect(Collectors.toSet())
         ));
         return dto;
     }
 
-    public List<Map<String, Object>> getAllShips(Set<Ship> ships) {
-        return ships
+    public List<Map<String, Object>> getAllShips() {
+        return this.getShips()
                 .stream()
                 .map(ship -> ship.ShipDTO())
                 .collect(Collectors.toList());

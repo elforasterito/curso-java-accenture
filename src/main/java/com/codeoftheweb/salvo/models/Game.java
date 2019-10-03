@@ -1,6 +1,7 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.models;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.Authentication;
 
 
 import javax.persistence.*;
@@ -16,6 +17,9 @@ public class Game {
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
+
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    Set<Score> scores;
 
     private Date creationDate;
     public Game() { }
@@ -35,17 +39,30 @@ public class Game {
         return gamePlayers;
     }
 
-    public Map<String, Object> toDTO(){
+    public Set<Score> getScores() {
+        return scores;
+    }
+
+    public Map<String, Object> gameDTO(){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
+
             dto.put("id", this.getId());
             dto.put("created", this.getCreationDate().toInstant().toEpochMilli());
-            dto.put("gamePlayers", this.getAllGamePlayersDTO(getGamePlayers()));
+            dto.put("gamePlayers", this.getAllGamePlayers());
+            dto.put("scores", this.getAllScores());
             return dto;
     }
-    public List<Map<String, Object>> getAllGamePlayersDTO(Set<GamePlayer> gamePlayers) {
-        return gamePlayers
+    public List<Map<String, Object>> getAllGamePlayers() {
+        return this.getGamePlayers()
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayersDTO())
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getAllScores() {
+        return this.getScores()
+                .stream()
+                .map(score -> score.makeScoresDTO())
                 .collect(Collectors.toList());
     }
 }
